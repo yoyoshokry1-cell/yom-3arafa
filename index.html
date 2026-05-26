@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مخطط يوم عرفة التفاعلي للموبايل</title>
+    <style>
+        :root {
+            --primary-color: #1e4631;
+            --secondary-color: #d4af37;
+            --bg-color: #f7f9f6;
+            --text-color: #2b2b2b;
+            --card-bg: #ffffff;
+            --success-color: #2e7d32;
+            --hadith-color: #4a6b58;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), #0f251a);
+            color: white;
+            text-align: center;
+            padding: 30px 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        header p {
+            margin: 8px 0 0 0;
+            font-size: 1rem;
+            opacity: 0.85;
+        }
+
+        /* شريط الإنجاز المثبت للموبايل */
+        .progress-container {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            padding: 12px 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .progress-label {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .progress-bar-bg {
+            background: #e0e0e0;
+            border-radius: 10px;
+            flex-grow: 1;
+            height: 10px;
+            margin: 0 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            background: linear-gradient(90deg, var(--secondary-color), var(--success-color));
+            width: 0%;
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            min-width: 35px;
+            text-align: left;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        /* العداد التنازلي */
+        .countdown-box {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        #timer {
+            font-weight: bold;
+            color: var(--secondary-color);
+            display: block;
+            font-size: 1.1rem;
+            margin-top: 3px;
+        }
+
+        /* التحكم بالصوت */
+        .audio-control {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            border: 1px solid #eef2ee;
+        }
+
+        .audio-control p {
+            margin: 0 0 10px 0;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .audio-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.95rem;
+            border-radius: 20px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 250px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        /* الجدول الزمني المطور للموبايل */
+        .timeline {
+            position: relative;
+            padding-right: 15px;
+            border-right: 2px solid var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            border: 1px solid #eef2ee;
+            transition: all 0.2s ease;
+        }
+
+        /* الدائرة على الخط الجانبي */
+        .timeline-item::before {
+            content: '✓';
+            position: absolute;
+            top: 18px;
+            right: -27px;
+            width: 20px;
+            height: 20px;
+            background-color: #fff;
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            z-index: 1;
+            text-align: center;
+            font-size: 0.75rem;
+            line-height: 16px;
+            color: transparent;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        /* شكل البطاقة عند الضغط والإنجاز */
+        .timeline-item.completed {
+            background-color: #f1f8f3;
+            border-color: var(--success-color);
+        }
+
+        .timeline-item.completed h3, 
+        .timeline-item.completed p,
+        .timeline-item.completed .hadith-proof {
+            text-decoration: line-through;
+            color: #757575;
+            opacity: 0.7;
+        }
+
+        .timeline-item.completed::before {
+            background-color: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
+        }
+
+        .time-tag {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .timeline-item.completed .time-tag {
+            background-color: #757575;
+        }
+
+        .timeline-item h3 {
+            margin: 5px 0;
+            font-size: 1.05rem;
+            color: var(--primary-color);
+        }
+
+        .timeline-item p {
+            margin: 5px 0 0 0;
+            font-size: 0.95rem;
+            color: #444;
+        }
+
+        .hadith-proof {
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px dashed #e0e0e0;
+            font-size: 0.85rem;
+            color: var(--hadith-color);
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        .hadith-proof strong {
+            color: var(--primary-color);
+            font-style: normal;
+        }
+
+        .hadith-card {
+            background: #fffdf0;
+            border-right: 4px solid var(--secondary-color);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 25px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+
+        .hadith-card p {
+            margin: 0 0 5px 0;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .hadith-card h2 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>خطة يوم عرفة التفاعلية</h1>
+        <p>اضغط على أي خطوة تنجزها لتتابع تقدمك</p>
+    </header>
+
+    <div class="progress-container">
+        <span class="progress-label">إنجاز اليوم:</span>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+        <div class="progress-text" id="progressText">0%</div>
+    </div>
+
+    <div class="container">
+        
+        <div class="countdown-box">
+            <span>الوقت المتبقي على يوم عرفة:</span>
+            <span id="timer">جاري الحساب...</span>
+        </div>
+
+        <div class="audio-control">
+            <p>الخلفية الصوتية: سورة الكهف - إسلام صبحي 🎧</p>
+            <button class="audio-btn" id="audioBtn" onclick="toggleAudio()">تشغيل الصوت</button>
+            <audio id="bgAudio" loop>
+                <source src="https://archive.org/download/018_20201124_202011/018.mp3" type="audio/mpeg">
+            </audio>
+            <audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav" preload="auto"></audio>
+        </div>
+
+        <div class="timeline">
+            
+            <div class="timeline-item" onclick="toggleStep(this)">
+                <span class="time-tag">10:00 مساءً (ليلة عرفة)</span>
+                <h3>النوم مبكراً واحتساب الأجر</h3>
+                <p>النوم مبكراً لتوفير الطاقة للعبادة طوال النهار، واضبط المنبه على الساعة 2:20 فجراً.</p>
+                <div class="hadith-proof">
+                    <strong>الدليل النبوي:</strong> قالت عائشة رضي الله عنها عن نوم النبي ﷺ: "كانَ يَنَامُ أوَّلَ اللَّيْلِ ويَقُومُ آخِرَهُ".
+                </div>
+            </div>
+
+            <div class="timeline-item" onclick="toggleStep(this)">
+                <span class="time-tag">2:20 فجراً (قبل الفجر بساعة)</span>
+                <h3>صلاة قيام الليل والوتر</h3>
+                <p>صلاة 4 ركعات قيام الليل بخشوع وتدبر ثم ختمها بركعة الوتر.</p>
+                <div class="hadith-proof">
+                    <strong>الدليل النبوي:</strong> قال ﷺ: "يَنْزِلُ رَبُّنَا كُلَّ لَيْلَةٍ إِلَى السَّمَاءِ الدُّنْيَا حِينَ يَبْقَى ثُلُثُ اللَّيْلِ الآخِرُ يَقُولُ: مَنْ يَدْعُونِي فَأَسْتَجِيبَ لَهُ؟".
+                </div>
+            </div>
+
+            <div class="timeline-item" onclick="toggleStep(this)">
+                <span class="time-tag">2:50 فجراً</span>
+                <h3>وجبة السحور والاستغفار</h3>
+                <p>تناول طعام السحور بنية الصيام، واستغلال الدقائق المتبقية بالاستغفار بالأسحار.</p>
+                <div class="hadith-proof">
+                    <strong>الدليل النبوي:</strong> قال ﷺ: "تَسَحَّرُوا فَإِنَّ فِي السَّحُورِ بَرَكَةً"، ووصف الله عباده فقال: "وَبِالْأَسْحَارِ هُمْ يَسْتَغْفِرُونَ".
+                </div>
+            </div>
+
+            <div class="timeline-item" onclick="toggleStep(this)">
+                <span class="time-tag">أذان الفجر</span>
+                <h3>صلاة الفجر في جماعة</h3>
+                <p>النزول لأداء الصلاة في المسجد بخشوع وسكينة (أو في وقتها للمرأة في بيتها).</p>
+                <div class="hadith-proof">
+                    <strong>الدليل النبوي:</strong> قال ﷺ: "مَن صَلَّى الصُّبْحَ في جَماعَةٍ فَهو في ذِمَّةِ اللَّهِ".
+                </div>
+            </div>
+
+            <div class="timeline-item" onclick="toggleStep(this)">
+                <span class="time-tag">بعد الفجر حتى الشروق</span>
+                <h3>جلسة أذكار الصباح والشروق</h3>
+                <p>الجلوس في المصلّى لقراءة القرآن، ترديد أذكار الصباح، وصلاة ركعتي الضحى بعد الشروق بربع ساعة.</p>
+                <div class="hadith-proof">
+                    <strong>الدليل النبوي:</strong> قال ﷺ: "مَن صلى الغداةَ في جماعةٍ، ثم قعد يذكرُ اللهَ حتى تطلعَ الشمسُ، ثم صلى ركعتينِ, كانت له كأجرِ حَجَّةٍ وعمرةٍ تامَّةٍ".
+                </div>
+            </div>
+
+            <div class="timeline-item" onclick="toggleStep(this)">
+                <span class="time-tag">طوال نهار عرفة</span>
+                <h3>الذكر المطلق وصيام النهار</h3>
+                <p>ترديد التلبية والذكر (لا إله إلا الله وحده لا شريك له...) طوال اليوم في كل أحوالك.</p>
+                <div class="hadith-proof">
+                    <strong>الدليل النبوي:</strong> قال ﷺ: "صِيَامُ يَوْمِ عَرَفَةَ، أَحْتَسِبُ عَلَى اللهِ أَنْ يُكَفِّرَ السَّنَةَ الَّتِي قَبْلَهُ، وَالسَّنَةَ الَّتِي بَعْدَهُ".
+                </div>
+            </div>
+
+            <div class="timeline-item" onclick="toggleStep(this)">
+                <span class="time-tag">من العصر إلى المغرب</span>
+                <h3>الخلوة التامة والدعاء المستجاب</h3>
+                <p>تفريغ النفس تماماً، والجلوس باتجاه القبلة، والإلحاح بالدعاء لك ولأهلك وللمسلمين بيقين.</p>
+                <div class="hadith-proof">
+                    <strong>الدليل النبوي:</strong> قال ﷺ: "خَيْرُ الدُّعَاءِ دُعَاءُ يَوْمِ عَرَفَةَ، وَخَيْرُ مَا قُلْتُ أَنَا وَالنَّبِيُّونَ مِنْ قَبْلِي: لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ...".
+                </div>
+            </div>
+
+        </div>
+
+        <div class="hadith-card">
+            <p>أعظم دعاء في هذا اليوم العظيم:</p>
+            <h2>"لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ"</h2>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>تقبل الله طاعاتكم ومستعدون دائماً للمساعدة!</p>
+    </footer>
+
+    <script>
+        // 1. نظام تشطيب المهام وحساب النسبة
+        function toggleStep(element) {
+            element.classList.toggle('completed');
+            
+            // تشغيل صوت نقرة تفاعلية خفيفة
+            const clickSound = document.getElementById('clickSound');
+            clickSound.currentTime = 0;
+            clickSound.volume = 0.15;
+            clickSound.play().catch(e => {});
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const totalItems = document.querySelectorAll('.timeline-item').length;
+            const completedItems = document.querySelectorAll('.timeline-item.completed').length;
+            const percentage = Math.round((completedItems / totalItems) * 100);
+
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = percentage + '%';
+        }
+
+        // 2. التحكم في المشغل الصوتي
+        const audio = document.getElementById('bgAudio');
+        const btn = document.getElementById('audioBtn');
+        audio.volume = 0.25; // مستوى صوت هادئ ومناسب كخلفية
+
+        function toggleAudio() {
+            if (audio.paused) {
+                audio.play();
+                btn.textContent = "إيقاف الصوت مؤقتاً";
+                btn.style.backgroundColor = "#c0392b";
+            } else {
+                audio.pause();
+                btn.textContent = "تشغيل الصوت";
+                btn.style.backgroundColor = "var(--primary-color)";
+            }
+        }
+
+        // 3. العداد التنازلي معدل ليكون يوم 25 مايو 2026
+        function updateCountdown() {
+            const now = new Date();
+            
+            // تم ضبط التاريخ بدقة على يوم 25 مايو 2026 الساعة 00:00:00
+            const arafaDate = new Date("May 26, 2026 00:00:00"); 
+
+            const diff = arafaDate - now;
+
+            if (diff <= 0) {
+                document.getElementById('timer').textContent = "لقد بدأ يوم عرفة المبارك، استغله جيداً! تقبل الله منكم.";
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+            document.getElementById('timer').textContent = `${days} يوم و ${hours} ساعة و ${minutes} دقيقة`;
+        }
+        
+        setInterval(updateCountdown, 60000);
+        updateCountdown();
+    </script>
+</body>
+</html>
